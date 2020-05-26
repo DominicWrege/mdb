@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "mdb"
+version = "0.1.0"
+description = ""
+authors = ["DomincWrege <dominic.wrege001@stud.fh-dortmund.de>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+praw = "^7.0.0"
+kafka-python = "^2.0.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[tool.poetry.scripts]
+producer = "mdb.kafka_c:main"
+consumer = "mdb.kafka_p:main"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
