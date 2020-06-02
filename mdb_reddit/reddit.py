@@ -1,6 +1,9 @@
+#
+# Just for playing with reddit api 
+#
+
 import praw
 import json 
-
 import math
 
 

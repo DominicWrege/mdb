@@ -17,7 +17,7 @@ def reddit_client() -> str:
 
 def front_page_top(client: Reddit) -> List[any]:
     posts: List = []
-    for submission in client.front.top(time_filter="day", limit=50):
+    for submission in client.front.top(time_filter="day", limit=250):
         post_j = {
                 "title": submission.title,
                 "url": submission.url, 
