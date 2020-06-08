@@ -17,8 +17,6 @@ def main():
     for msg in setup.kafka:
         #print(msg)
         post = json.loads(msg.value.decode("UTF-8"))
-        
-        
         if db_posts.find_one({ "id": post["id"] }) == None: # for dups
             db_posts.insert(post)
             print("<------------------new post------------------------>")

@@ -38,10 +38,12 @@ def send_posts_to_kafka(client: Reddit):
 
 def main():
     while True:
-        print("fetching every 10 min")
-        client: Reddit = reddit_client()
-        send_posts_to_kafka(client)
-        time.sleep(60 * 10 ) # 10 min
-
+        try:
+            print("fetching every 10 min")
+            client: Reddit = reddit_client()
+            send_posts_to_kafka(client)
+            time.sleep(60 * 10 ) # 10 min
+        except:
+            print("The broker or reddit is down")
 if __name__ == "__main__":
     main()
