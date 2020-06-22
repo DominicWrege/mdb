@@ -22,6 +22,7 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
@@ -37,22 +38,25 @@ services:
     image: mongo
     restart: always
     volumes:
-      - "./data/monogoconfig:/data/configdb"
-      - "./data/mongodata:/data/db"
+      - "./mongo/mongod.conf:/etc/mongo/mongod.conf"
+      - "./mongo/mongodata:/data/db"
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: test
-      MONGO_INITDB_DATABASE: auth
+      MONGO_INITDB_ROOT_PASSWORD: dortmund
+      MONGO_INITDB_DATABASE: reddit
+    command: mongod --replSet fish-set --bind_ip 0.0.0.0
   mongo-express:
     image: mongo-express
     restart: always
     ports:
       - 8077:8081
     environment:
+      ME_CONFIG_BASICAUTH_USERNAME: inga
+      ME_CONFIG_BASICAUTH_PASSWORD: wasser
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: test
+      ME_CONFIG_MONGODB_ADMINPASSWORD: dortmund
   control-center:
     image: confluentinc/cp-enterprise-control-center:5.5.0
     hostname: control-center
@@ -74,17 +78,6 @@ services:
       CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
       CONFLUENT_METRICS_TOPIC_REPLICATION: 1
       PORT: 9021
-  arango:
-    image: arangodb:latest
-    hostname: arangodb
-    container_name: arangodb
-    ports:
-      - 8530:8529
-    depends_on:
-      - connect
-      - broker
-    environment:
-      - ARANGO_ROOT_PASSWORD=password1
   connect:
     image: cnfldemos/cp-server-connect-datagen:0.3.2-5.5.0
     hostname: connect
@@ -119,3 +112,59 @@ services:
       CONNECT_PRODUCER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringProducerInterceptor"
       CONNECT_CONSUMER_INTERCEPTOR_CLASSES: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/java/plugins,/usr/share/confluent-hub-components"
+  elasticsearch:
+    hostname: elasticsearch
+    container_name: elasticsearch
+    restart: always
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.2
+    ports:
+      - "9200:9200"
+    environment:
+      discovery.type: "single-node"
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+    volumes:
+      - ./elasticsearch-data:/usr/share/elasticsearch/data
+    depends_on:
+      - broker
+      - connect
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.5.2
+    restart: always
+    ports:
+      - 5701:5601
+    volumes: 
+    - ./kibana-data:/bitnami
+    environment: 
+      ELASTICSEARCH_HOSTS: "http://elasticsearch:9200"
+    depends_on: 
+      - elasticsearch
+      - connect
+
+        # reddit_producer:
+  #   image: dominicwrege/mdb-python:latest
+  #   container_name: reddit_fetcher
+  #   volumes:
+  #     - ./:/usr/locale/bin
+  #   command: bash -c "poetry install && poetry run producer"
+  #   working_dir: /usr/locale/bin
+  #   depends_on:
+  #     - mongo
+  #     - connect
+  #     - broker
+  #     - zookeeper
+  #   links:
+  #     - "broker:broker"
+  # reddit_consumer:
+  #   image: dominicwrege/mdb-python:latest
+  #   container_name: reddit_into_mongo
+  #   volumes:
+  #     - ./:/usr/locale/bin
+  #   command: bash -c "poetry install && poetry run consumer"
+  #   working_dir: /usr/locale/bin
+  #   depends_on:
+  #     - broker
+  #     - reddit_producer
+  #     - mongo
+  #   links:
+  #     - "broker:broker"

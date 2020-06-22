@@ -10,15 +10,17 @@ praw = "^7.0.0"
 kafka-python = "^2.0.1"
 pymongo = "^3.10.1"
 pprint = "^0.1"
+arrow = "^0.15.7"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pylint = "^2.5.2"
 
 [tool.poetry.scripts]
-consumer = "mdb_reddit.kafka_c:main"
-producer = "mdb_reddit.kafka_p:main"
-reddit = "mdb_reddit.reddit:main"
+db_writer = "mdb_reddit.db_writer:main"
+fetcher = "mdb_reddit.fetcher:main"
+testing = "mdb_reddit.reddit_test:main"
+connector = "mdb_reddit.monogdb_connector_source:main"
 
 [build-system]
 requires = ["poetry>=0.12"]

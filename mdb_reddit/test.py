@@ -4,6 +4,7 @@ import json
 import subprocess
 from pathlib import Path
 
+
 venv_path = subprocess.check_output("poetry env info --path".split())
 venv_path = venv_path.decode("UTF-8")
 

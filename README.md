@@ -31,3 +31,4 @@ TODO:
 - [ ] save connector config from container
 - [ ] more topics comments, user
 - [ ] volumne for anngodb and mongdb container
+- [ ] basic auth mongo-express
