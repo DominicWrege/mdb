@@ -1,4 +1,3 @@
-from kafka import KafkaProducer
 import arrow
 import json
 import time
@@ -9,7 +8,7 @@ import json
 import logging
 import pprint
 import sys
-from mdb_reddit.util import time_now, sleep_min
+from mdb_reddit.util import time_now, sleep_min, get_kafka_producer
 
 ###---------####
 
@@ -70,8 +69,7 @@ def front_page(fetcher) -> List[any]:
 
 
 def send_posts_to_kafka(list_posts, topic_name):
-    producer = KafkaProducer(bootstrap_servers='127.0.0.1:9092', compression_type="gzip",
-                value_serializer=lambda v: json.dumps(v).encode('utf-8'))
+    producer = get_kafka_producer()
     for p in list_posts:
         producer.send(f"p_{topic_name}_posts", p)
 
@@ -81,11 +79,11 @@ def all_fetching(interval, posts_limit, client):
     fetch_from_reddit(client.front.hot(limit=posts_limit), name="hot")
     fetch_from_reddit(client.front.controversial(time_filter="day", limit=posts_limit), name="controversial")
     fetch_from_reddit(client.front.rising(limit=posts_limit), name="rising")
-    print(f"{time_now()}  now sleeping {interval}min")
+    print(f"{time_now()} now sleeping {interval}min")
     sleep_min(interval)
 
 def main():
-    interval = 40 # in min
+    interval = 30 # in min
     posts_limit = 250
     # logging.basicConfig(level=logging.INFO)
     client = reddit_client()

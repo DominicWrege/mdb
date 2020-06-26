@@ -25,10 +25,6 @@ Run produzer:
 poetry run produzer
 ```
 
-TODO:
+# Telegram
 
-- [ ] connector config for mongodb and arangodb
-- [ ] save connector config from container
-- [ ] more topics comments, user
-- [ ] volumne for anngodb and mongdb container
-- [ ] basic auth mongo-express
+@mdbreddit_bot or t.me/mdbreddit_bot

@@ -1,18 +1,17 @@
-from kafka import KafkaConsumer
 import json
 import pprint
 import threading
 from pymongo import MongoClient, database
 import logging
 import sys
-
+from mdb_reddit.util import get_reddit_db, get_kafka_consumer
 class Setup:
     def __init__(self, topic, collection):
         # logging.basicConfig(level=logging.INFO)
         self.topic = topic
         self.collection = collection
-        self.kafka = KafkaConsumer(topic, bootstrap_servers='127.0.0.1:9092')
-        self.mongodb = MongoClient("mongodb://root:dortmund@127.0.0.1").reddit
+        self.kafka = get_kafka_consumer(topic)
+        self.mongodb = get_reddit_db()
         self.pp = pprint.PrettyPrinter(indent=4)
 
 
@@ -26,8 +25,8 @@ def kafka_listener(topic_name, collection):
         post = json.loads(msg.value.decode("UTF-8"))
         if db_posts.find_one({ "id": post["id"] }) == None: # for dups
             db_posts.insert(post)
-            pp.pprint("<------------------new post------------------------>")
-            pp.pprint(post)
+            # pp.pprint("<------------------new post------------------------>")
+            # pp.pprint(post)
 
 def new_thread(topic_name, collection_name):
     threading.Thread(target=kafka_listener, args=([topic_name, collection_name])).start()
