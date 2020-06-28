@@ -45,10 +45,6 @@ def main():
     # print(arrow.now().format('YYYY-MM-DD HH:mm:ss'))
     # runn(runner)
     aa()
-    print(os.getenv("TELEGRAM_TOKEN"))
-    reddit = praw.Reddit(client_id="MT6FBX3wJvaHug",
-                        client_secret="ld_OTIpPdKYWelJ5I9j9p0RgXBg",
-                        user_agent="my user agent")
     #reddit.front.top(time_filter="day", limit=10):
     #reddit.front.hot(limit=10):
     #reddit.front.controversial(time_filter="day", limit=10):
