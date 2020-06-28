@@ -13,6 +13,7 @@ pprint = "^0.1"
 arrow = "^0.15.7"
 python-telegram-bot = "^12.8"
 python-dotenv = "^0.13.0"
+redis = "^3.5.3"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

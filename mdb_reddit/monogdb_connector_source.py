@@ -3,6 +3,7 @@ import threading
 import time
 import json
 import pdb
+import sys
 from mdb_reddit.util import get_reddit_db, get_kafka_producer
 # https://docs.mongodb.com/manual/reference/method/db.watch/
 # https://api.mongodb.com/python/current/api/pymongo/change_stream.html
@@ -20,9 +21,8 @@ def run(collection_name, topic):
             for insert_change in stream:
                     value = insert_change["fullDocument"] 
                     del value["_id"]
-                    #print("inserted: ", value)
-                    #pdb.set_trace() #debug
                     kafka.send(topic, value)
+                    kafka.send("telegram", value)
         time.sleep(sleep_time)
         print(f"sleep for {sleep_time} sec")
             
@@ -42,11 +42,17 @@ def new_listener(collection_name):
 ###--------#######
 
 def main():
-    print("mongodb source connector started:")
-    new_listener("top_posts")
-    new_listener("rising_posts")
-    new_listener("controversial_posts")
-    new_listener("hot_posts")
+    try:
+        print("mongodb source connector started:")
+        new_listener("top_posts")
+        new_listener("rising_posts")
+        new_listener("controversial_posts")
+        new_listener("hot_posts")
+    except KeyboardInterrupt:
+        exit()
+    except Exception as e:
+        print(e, file=sys.stderr)
+
 
 if __name__ == "__main__":
     main()

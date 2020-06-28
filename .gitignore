@@ -12,6 +12,7 @@ build/
 data
 develop-eggs/
 dist/
+db_data/
 downloads/
 eggs/
 .eggs/
