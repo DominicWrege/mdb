@@ -100,7 +100,7 @@ def subscribe(update, context):
         reddit_client.subreddit(subreddit_name).id
     except (NotFound, Redirect):
         update.message.reply_text(
-            f"The subreddit '{subreddit_name}' does not exit. You can try news, pics or apple for example."
+            f"The subreddit '{subreddit_name}' does not exist. You can try news, pics or apple for example."
         )
         return 
     b_subreddit_name = context.args[0].encode("UTF-8")
