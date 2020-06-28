@@ -10,7 +10,7 @@ import redis
 import pickle
 import os
 from dotenv import load_dotenv
-
+from prawcore.exceptions import NotFound
 from mdb_reddit.util import get_kafka_producer
 
 def runner():
@@ -44,13 +44,12 @@ def main():
     # print("send done")
     # print(arrow.now().format('YYYY-MM-DD HH:mm:ss'))
     # runn(runner)
-    aa()
     #reddit.front.top(time_filter="day", limit=10):
     #reddit.front.hot(limit=10):
     #reddit.front.controversial(time_filter="day", limit=10):
     #reddit.front.rising(limit=10)
-    for submission in reddit.front.rising(limit=10):
-        print("title:", submission.title, "  url:", submission.url)
+    # for submission in reddit.front.rising(limit=10):
+    #     print("title:", submission.title, "  url:", submission.url)
     #     post_j = json.dumps({"title": submission.title, "url": submission.url})
     #     print(post_j)
 

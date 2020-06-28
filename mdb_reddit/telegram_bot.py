@@ -4,7 +4,7 @@ from telegram.error import NetworkError, Unauthorized
 from time import sleep
 from dotenv import load_dotenv
 import os
-from mdb_reddit.util import get_kafka_consumer, time_now
+from mdb_reddit.util import get_kafka_consumer, time_now, get_reddit_client
 import json
 from telegram.ext import Updater, CommandHandler 
 from uuid import uuid4
@@ -13,18 +13,22 @@ import pdb
 from queue import Queue, Empty
 import redis
 from redis.client import Redis
+from prawcore.exceptions import NotFound, Redirect
+
 
 send_queue = Queue()
 db_password = ""
 connection_pool = None
-
+reddit_client = None
 
 def main():
     global connection_pool
     global db_password
+    global reddit_client
     load_dotenv()
     token = os.getenv("TELEGRAM_TOKEN")
     db_password = os.getenv("REDIS_PWD")
+    reddit_client = get_reddit_client()
     print("Starting Telegram Bot")
     updater = Updater(token, use_context=True)
     connection_pool = redis.ConnectionPool(host='127.0.0.1', port=6379, db=0, password=db_password, max_connections=16)
@@ -83,16 +87,23 @@ def list_subs(update, context):
         update.message.reply_text(f"Your subscriptions: {', '.join(msg)}")
 
 def need_more_arguments(update):
-    if hasattr(update.message, 'reply_text'):
-            update.message.reply_text("Need 1 argument <subredditname>")
+    if message is not None and hasattr(update, "message") and hasattr(update.message, 'reply_text'):
+        update.message.reply_text("Need 1 argument <subredditname>")
 
 def subscribe(update, context):
     # update.message.reply_text('Hi! Use /set <dsa to set a timer')
     if len(context.args) < 1:
-        update.message.reply_text("Need 1 argument <subredditname>")
+        need_more_arguments(update)
         return
-    b_subreddit_name = context.args[0].encode("UTF-8")
     subreddit_name = context.args[0]
+    try:
+        reddit_client.subreddit(subreddit_name).id
+    except (NotFound, Redirect):
+        update.message.reply_text(
+            f"Subreedit does not exits {subreddit_name}. You can try news, pics or apple for example."
+        )
+        return 
+    b_subreddit_name = context.args[0].encode("UTF-8")
     user_id = update.message.chat.id
     redis = con_redis()
     subscriptions = redis.smembers(user_id)

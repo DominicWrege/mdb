@@ -9,8 +9,7 @@ import logging
 import pprint
 import sys
 import os
-from mdb_reddit.util import time_now, sleep_min, get_kafka_producer
-from dotenv import load_dotenv
+from mdb_reddit.util import time_now, sleep_min, get_kafka_producer, get_reddit_client
 ###---------####
 
 # p_hot_posts
@@ -22,13 +21,6 @@ from dotenv import load_dotenv
 
 
 #https://pypi.org/project/arrow/
-
-def reddit_client():
-    load_dotenv()
-    return praw.Reddit(client_id=os.getenv("CLIENT_ID"),
-                       client_secret=os.getenv("CLIENT_SECRET"),
-                       user_agent="praw_python_fhdo_projekt")
-
 
 # fetcher type
 # client.front.top(time_filter="day", limit=250):
@@ -88,7 +80,7 @@ def main():
     interval = 30 # in min
     posts_limit = 250
     # logging.basicConfig(level=logging.INFO)
-    client = reddit_client()
+    client = get_reddit_client()
     print(f"{time_now()} fechting every {interval} min, posts_limit {posts_limit}")
     while True:
         try:
