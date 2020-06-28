@@ -8,8 +8,9 @@ import json
 import logging
 import pprint
 import sys
+import os
 from mdb_reddit.util import time_now, sleep_min, get_kafka_producer
-
+from dotenv import load_dotenv
 ###---------####
 
 # p_hot_posts
@@ -23,8 +24,9 @@ from mdb_reddit.util import time_now, sleep_min, get_kafka_producer
 #https://pypi.org/project/arrow/
 
 def reddit_client():
-    return praw.Reddit(client_id="ZuAQ4z82JQDngA",
-                       client_secret="yzTKHSRGbl0O8ROCq2oi1gnX8vA",
+    load_dotenv()
+    return praw.Reddit(client_id=os.getenv("CLIENT_ID"),
+                       client_secret=os.getenv("CLIENT_SECRET"),
                        user_agent="praw_python_fhdo_projekt")
 
 

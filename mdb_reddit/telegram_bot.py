@@ -8,7 +8,6 @@ from mdb_reddit.util import get_kafka_consumer, time_now
 import json
 from telegram.ext import Updater, CommandHandler 
 from uuid import uuid4
-import logging
 import threading
 import pdb
 from queue import Queue, Empty
@@ -34,6 +33,7 @@ def main():
     dp.add_handler(CommandHandler("sub", subscribe, pass_args=True))
     dp.add_handler(CommandHandler("unsub", unsubscribe, pass_args=True))
     dp.add_handler(CommandHandler("hello", greeting))
+    dp.add_handler(CommandHandler("start", greeting))
     dp.add_handler(CommandHandler("help", help))
     dp.add_handler(CommandHandler("list", list_subs))
     threading.Thread(target=kafka, args=([])).start()
@@ -59,14 +59,14 @@ def poll(context):
 def greeting(update, context):
     username = update.message.chat.username
     update.message.reply_text(
-        f"Hey {username} 👋 my name is Guido 🦔 and I am your reddit bot.\nYou can use /help for more information."
+        f"Hey {username} 👋 my name is Guido 🦔 and I am your reddit bot.\nYou can use /help for more information how to use this bot."
         )
 def help(update, context):
-    msg = """Commands:
-/sub <subreddit_name> \t to subscribe
+    msg = """Supported commands:
+/sub <subreddit_name>\t to subscribe
 /unsub <subreddit_name>...\t to unsubscribe
-/list \t show your subscriptions
-/hello greetings to you =)
+/list\t show your subscriptions
+/hello\t greetings to you =)
             """
     update.message.reply_text(msg)
 
@@ -96,7 +96,6 @@ def subscribe(update, context):
     user_id = update.message.chat.id
     redis = con_redis()
     subscriptions = redis.smembers(user_id)
-    print(subscriptions)
     if b_subreddit_name in subscriptions:
         update.message.reply_text(f"You are already subscribed to {subreddit_name}")
     else:

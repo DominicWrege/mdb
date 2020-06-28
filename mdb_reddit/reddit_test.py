@@ -8,6 +8,8 @@ import math
 import arrow
 import redis
 import pickle
+import os
+from dotenv import load_dotenv
 
 from mdb_reddit.util import get_kafka_producer
 
@@ -28,31 +30,36 @@ def main():
     # print(pickle.loads(db.get("test")))
     # for key in db.scan_iter("*").items():
     #     print(key)
-    kafka = get_kafka_producer() 
-    kafka.send("telegram", {
-            "title": "Hallo",
-            "id": "test.com",
-            "url": "abc.de",
-            "score": 2342,
-            "num_comments": 289,
-            "created_utc": "2020-06-22T14:08:36+00:00",
-            "subbredit": "pics",
-            "subbredit_id": "3h47q",
-    })
+    # kafka = get_kafka_producer() 
+    # kafka.send("telegram", {
+    #         "title": "Lotti Test1",
+    #         "id": "test.com",
+    #         "url": "abc.de",
+    #         "score": 2342,
+    #         "num_comments": 289,
+    #         "created_utc": "2020-06-22T14:08:36+00:00",
+    #         "subbredit": "pics",
+    #         "subbredit_id": "3h47q",
+    # })
     # print("send done")
     # print(arrow.now().format('YYYY-MM-DD HH:mm:ss'))
     # runn(runner)
-    # reddit = praw.Reddit(client_id="ZuAQ4z82JQDngA",
-    #                     client_secret="yzTKHSRGbl0O8ROCq2oi1gnX8vA",
-    #                     user_agent="my user agent")
+    aa()
+    print(os.getenv("TELEGRAM_TOKEN"))
+    reddit = praw.Reddit(client_id="MT6FBX3wJvaHug",
+                        client_secret="ld_OTIpPdKYWelJ5I9j9p0RgXBg",
+                        user_agent="my user agent")
     #reddit.front.top(time_filter="day", limit=10):
     #reddit.front.hot(limit=10):
     #reddit.front.controversial(time_filter="day", limit=10):
     #reddit.front.rising(limit=10)
-    # for submission in reddit.front.rising(limit=10):
-    #     #print("title:", submission.title, "  url:", submission.url)
+    for submission in reddit.front.rising(limit=10):
+        print("title:", submission.title, "  url:", submission.url)
     #     post_j = json.dumps({"title": submission.title, "url": submission.url})
     #     print(post_j)
+
+def aa():
+    load_dotenv()
 
 if __name__ == "__main__":
     main()
