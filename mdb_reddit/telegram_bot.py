@@ -48,7 +48,6 @@ def main():
 
 
 def con_redis():
-    global connection_pool
     return Redis(connection_pool=connection_pool)
 
 def poll(context):
@@ -58,7 +57,7 @@ def poll(context):
             item = send_queue.get_nowait()
             context.bot.send_message(item[0], text=item[1])
         except Unauthorized:
-            con_redis.delete(item[0])
+            con_redis().delete(item[0])
             continue
         except Empty:
             break
@@ -90,11 +89,9 @@ def list_subs(update, context):
         update.message.reply_text(f"Your subscriptions: {', '.join(msg)}")
 
 def need_more_arguments(update):
-    if message is not None and hasattr(update, "message") and hasattr(update.message, 'reply_text'):
         update.message.reply_text("Need 1 argument <subredditname>")
 
 def subscribe(update, context):
-    # update.message.reply_text('Hi! Use /set <dsa to set a timer')
     if len(context.args) < 1:
         need_more_arguments(update)
         return
@@ -107,15 +104,16 @@ def subscribe(update, context):
         )
         return 
     b_subreddit_name = context.args[0].encode("UTF-8")
-    user_id = update.message.chat.id
     redis = con_redis()
+    user_id = update.message.chat.id
     subscriptions = redis.smembers(user_id)
+    msg_text = None
     if b_subreddit_name in subscriptions:
-        update.message.reply_text(f"You are already subscribed to {subreddit_name}")
+        msg_text = f"You are already subscribed to {subreddit_name} 😅"
     else:
         redis.sadd(user_id, b_subreddit_name)
-        update.message.reply_text(f"Successfully subscribed to '{subreddit_name}'  🦊")
-
+        msg_text = f"Successfully subscribed to '{subreddit_name}'  🦊"
+    update.message.reply_text(msg_text)
 def unsubscribe(update, context):
     if len(context.args) < 1:
         need_more_arguments(update)
