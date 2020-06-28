@@ -1,0 +1,14 @@
+# Datei redis-container/docker-compose.yml
+version: "3"
+services:
+  # database
+  redisdb:
+    image: redis:5-alpine
+    container_name: redis
+    hostname: redis
+    volumes:
+      - ./db_data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - 6379:6379
+    restart: always
