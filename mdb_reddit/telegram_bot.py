@@ -14,6 +14,7 @@ from queue import Queue, Empty
 import redis
 from redis.client import Redis
 from prawcore.exceptions import NotFound, Redirect
+from telegram.error import Unauthorized
 
 
 send_queue = Queue()
@@ -56,7 +57,9 @@ def poll(context):
         try:
             item = send_queue.get_nowait()
             context.bot.send_message(item[0], text=item[1])
-            sleep(0.5)
+        except Unauthorized:
+            con_redis.delete(item[0])
+            continue
         except Empty:
             break
 
