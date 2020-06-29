@@ -7,24 +7,39 @@ poetry install
 
 ```
 
-Start Kafka:
+Start all Servers:
 
 ```
 docker-compose up
 ```
 
-Run consumer:
+Run reddit-fetcher:
 
 ```
-poetry run consumer
+poetry run fetcher
 ```
 
-Run produzer:
+Run mongodb sink connector:
 
 ```
-poetry run produzer
+poetry run db_writer
+```
+
+Run mongodb source connector:
+
+```
+poetry run connector
 ```
 
 # Telegram
 
 @mdbreddit_bot or t.me/mdbreddit_bot
+
+Run telegrambot:
+
+```
+cd reddis
+docker-compose up -d
+cd ..
+poetry run telegram
+```

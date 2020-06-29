@@ -140,7 +140,6 @@ def unsubscribe(update, context):
 def kafka():
     db = con_redis()
     for msg in get_kafka_consumer("telegram"):
-        print(f"{time_now()} - Getting messages from Kafka")
         post = json.loads(msg.value.decode("UTF-8"))
         for user_id in db.scan_iter("*"):
             user_subs = db.smembers(user_id)

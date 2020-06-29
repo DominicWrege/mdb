@@ -70,9 +70,9 @@ def send_posts_to_kafka(list_posts, topic_name):
 def all_fetching(interval, posts_limit, client):
     #client.front.top(time_filter="day", limit=250):
     fetch_from_reddit(client.front.top(time_filter="day", limit=posts_limit), name="top")
-    fetch_from_reddit(client.front.hot(limit=150), name="hot")
+    fetch_from_reddit(client.front.hot(limit=200), name="hot")
     fetch_from_reddit(client.front.controversial(time_filter="day", limit=posts_limit), name="controversial")
-    fetch_from_reddit(client.front.rising(limit=100), name="rising")
+    fetch_from_reddit(client.front.rising(limit=70), name="rising")
     print(f"{time_now()} now sleeping {interval}min")
     sleep_min(interval)
 

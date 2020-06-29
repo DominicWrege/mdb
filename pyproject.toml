@@ -22,7 +22,6 @@ pylint = "^2.5.2"
 [tool.poetry.scripts]
 db_writer = "mdb_reddit.db_writer:main"
 fetcher = "mdb_reddit.fetcher:main"
-testing = "mdb_reddit.reddit_test:main"
 connector = "mdb_reddit.monogdb_connector_source:main"
 telegram = "mdb_reddit.telegram_bot:main"
 [build-system]

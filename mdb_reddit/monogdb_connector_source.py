@@ -9,7 +9,6 @@ from mdb_reddit.util import get_reddit_db, get_kafka_producer
 # https://api.mongodb.com/python/current/api/pymongo/change_stream.html
 # https://docs.mongodb.com/manual/tutorial/deploy-replica-set/
 
-sleep_time = 3
 
 # waits for db insert and posts it to kafka
 def run(collection_name, topic):
@@ -22,9 +21,8 @@ def run(collection_name, topic):
                     value = insert_change["fullDocument"] 
                     del value["_id"]
                     kafka.send(topic, value)
-                    kafka.send("telegram", value)
-        time.sleep(sleep_time)
-        print(f"sleep for {sleep_time} sec")
+                    if value["over_18"] is False:
+                        kafka.send("telegram", value)
             
 def new_listener(collection_name):
     print(f"listening for collection: {collection_name}")
