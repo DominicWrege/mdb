@@ -20,9 +20,9 @@ pytest = "^5.2"
 pylint = "^2.5.2"
 
 [tool.poetry.scripts]
-mongo_sink= "mdb_reddit.mongo_sink_connector:main"
+mongo_sink= "mdb_reddit.mongodb_sink_connector:main"
 fetcher = "mdb_reddit.fetcher:main"
-mongo_source = "mdb_reddit.mongo_source_connector:main"
+mongo_source = "mdb_reddit.mongodb_source_connector:main"
 telegram = "mdb_reddit.telegram_bot:main"
 [build-system]
 requires = ["poetry>=0.12"]
