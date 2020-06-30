@@ -22,13 +22,13 @@ poetry run fetcher
 Run mongodb sink connector:
 
 ```
-poetry run db_writer
+poetry run mongo_sink 
 ```
 
 Run mongodb source connector:
 
 ```
-poetry run connector
+poetry run mongo_source
 ```
 
 # Telegram
