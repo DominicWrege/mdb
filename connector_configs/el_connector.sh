@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 
 curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json" -d '{
@@ -6,7 +6,7 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
     "config": {
     "connector.class":"io.confluent.connect.elasticsearch.ElasticsearchSinkConnector",
     "tasks.max": "1",
-    "topics":"ahh.reddit.top_posts",
+    "topics":"$1",
     "key.converter":"org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable":"false",
     "value.converter":"org.apache.kafka.connect.json.JsonConverter",
@@ -16,5 +16,5 @@ curl -X POST http://localhost:8083/connectors -H "Content-Type: application/json
     "connection.url": "http://172.22.160.87:9200",
     "type.name": "_doc",
     "name": "elasticsearch-sink"
-}
+    }
 }' | jq
